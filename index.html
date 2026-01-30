@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fanatico Chain - EVM Compatible L1 Blockchain</title>
     <meta name="description" content="Fanatico is an EVM-compatible Layer 1 blockchain with FCO native token. Chain ID: 11111111111">
+    <link rel="icon" type="image/svg+xml" href="assets/fanatico-logo.svg">
     <style>
         :root {
             --primary: #6366f1;
@@ -30,12 +31,19 @@
             padding: 3rem 0;
             border-bottom: 1px solid var(--border);
         }
+        .logo-icon {
+            width: 80px;
+            height: auto;
+            margin-bottom: 1rem;
+            filter: invert(1);
+        }
         .logo {
             font-size: 3rem;
             font-weight: 700;
             background: linear-gradient(135deg, var(--primary), #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
         }
         .tagline { color: var(--text-muted); font-size: 1.1rem; }
@@ -141,6 +149,7 @@
 <body>
     <div class="container">
         <header>
+            <img src="assets/fanatico-logo.svg" alt="Fanatico Logo" class="logo-icon">
             <div class="logo">Fanatico</div>
             <p class="tagline">EVM-Compatible Layer 1 Blockchain</p>
             <div class="status">
@@ -174,30 +183,12 @@
             <h2>Network Details</h2>
             <div class="card">
                 <table>
-                    <tr>
-                        <th>Network Name</th>
-                        <td>Fanatico</td>
-                    </tr>
-                    <tr>
-                        <th>Chain ID</th>
-                        <td><code>11111111111</code> (hex: <code>0x2964619c7</code>)</td>
-                    </tr>
-                    <tr>
-                        <th>RPC URL</th>
-                        <td><code>https://rpc.fanati.co</code></td>
-                    </tr>
-                    <tr>
-                        <th>Currency Symbol</th>
-                        <td><code>FCO</code></td>
-                    </tr>
-                    <tr>
-                        <th>Currency Decimals</th>
-                        <td><code>18</code></td>
-                    </tr>
-                    <tr>
-                        <th>Client Version</th>
-                        <td><code>FanaticoL1/v0.4.9.98/python</code></td>
-                    </tr>
+                    <tr><th>Network Name</th><td>Fanatico</td></tr>
+                    <tr><th>Chain ID</th><td><code>11111111111</code> (hex: <code>0x2964619c7</code>)</td></tr>
+                    <tr><th>RPC URL</th><td><code>https://rpc.fanati.co</code></td></tr>
+                    <tr><th>Currency Symbol</th><td><code>FCO</code></td></tr>
+                    <tr><th>Currency Decimals</th><td><code>18</code></td></tr>
+                    <tr><th>Client Version</th><td><code>FanaticoL1/v0.4.9.98/python</code></td></tr>
                 </table>
             </div>
         </section>
@@ -223,8 +214,7 @@ Decimals: 18
             <h2>Developer Integration</h2>
             <div class="card">
                 <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem;">Hardhat Configuration</h3>
-                <div class="code-block">
-module.exports = {
+                <div class="code-block">module.exports = {
   networks: {
     fanatico: {
       url: "https://rpc.fanati.co",
@@ -232,43 +222,26 @@ module.exports = {
       gasPrice: 20000000000
     }
   }
-};
-                </div>
+};</div>
             </div>
             <div class="card">
                 <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem;">ethers.js</h3>
-                <div class="code-block">
-const provider = new ethers.JsonRpcProvider("https://rpc.fanati.co");
-                </div>
+                <div class="code-block">const provider = new ethers.JsonRpcProvider("https://rpc.fanati.co");</div>
             </div>
             <div class="card">
                 <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem;">web3.py</h3>
-                <div class="code-block">
-from web3 import Web3
-w3 = Web3(Web3.HTTPProvider("https://rpc.fanati.co"))
-                </div>
+                <div class="code-block">from web3 import Web3
+w3 = Web3(Web3.HTTPProvider("https://rpc.fanati.co"))</div>
             </div>
         </section>
 
         <section>
             <h2>Supported Features</h2>
             <div class="grid">
-                <div class="card">
-                    <h3 style="margin-bottom: 0.5rem;">EIP-155</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Replay attack protection</p>
-                </div>
-                <div class="card">
-                    <h3 style="margin-bottom: 0.5rem;">EIP-1559</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Dynamic fee transactions</p>
-                </div>
-                <div class="card">
-                    <h3 style="margin-bottom: 0.5rem;">EIP-2930</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Access list transactions</p>
-                </div>
-                <div class="card">
-                    <h3 style="margin-bottom: 0.5rem;">WebSocket</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Real-time subscriptions</p>
-                </div>
+                <div class="card"><h3 style="margin-bottom: 0.5rem;">EIP-155</h3><p style="color: var(--text-muted); font-size: 0.9rem;">Replay attack protection</p></div>
+                <div class="card"><h3 style="margin-bottom: 0.5rem;">EIP-1559</h3><p style="color: var(--text-muted); font-size: 0.9rem;">Dynamic fee transactions</p></div>
+                <div class="card"><h3 style="margin-bottom: 0.5rem;">EIP-2930</h3><p style="color: var(--text-muted); font-size: 0.9rem;">Access list transactions</p></div>
+                <div class="card"><h3 style="margin-bottom: 0.5rem;">WebSocket</h3><p style="color: var(--text-muted); font-size: 0.9rem;">Real-time subscriptions</p></div>
             </div>
         </section>
 
@@ -280,7 +253,7 @@ w3 = Web3(Web3.HTTPProvider("https://rpc.fanati.co"))
         </section>
 
         <footer>
-            <p>&copy; 2026 Fanatico. All rights reserved.</p>
+            <p>2026 Fanatico. All rights reserved.</p>
         </footer>
     </div>
 
@@ -296,11 +269,7 @@ w3 = Web3(Web3.HTTPProvider("https://rpc.fanati.co"))
                     params: [{
                         chainId: '0x2964619c7',
                         chainName: 'Fanatico',
-                        nativeCurrency: {
-                            name: 'Fanatico',
-                            symbol: 'FCO',
-                            decimals: 18
-                        },
+                        nativeCurrency: { name: 'Fanatico', symbol: 'FCO', decimals: 18 },
                         rpcUrls: ['https://rpc.fanati.co'],
                         blockExplorerUrls: null
                     }]
