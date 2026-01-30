@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fanatico Chain - EVM Compatible L1 Blockchain</title>
+    <meta name="description" content="Fanatico is an EVM-compatible Layer 1 blockchain with FCO native token. Chain ID: 11111111111">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .tagline { color: var(--text-muted); font-size: 1.1rem; }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-light);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        section { padding: 2rem 0; }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        .card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .stat { text-align: center; padding: 1rem; }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        .stat-label { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th { color: var(--text-muted); font-weight: 500; }
+        code {
+            background: var(--bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+        .code-block {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: var(--primary-dark); }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover { background: var(--bg-light); }
+        .buttons { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .logo { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Fanatico</div>
+            <p class="tagline">EVM-Compatible Layer 1 Blockchain</p>
+            <div class="status">
+                <span class="status-dot"></span>
+                <span>Network Active</span>
+            </div>
+        </header>
+
+        <section>
+            <div class="grid">
+                <div class="card stat">
+                    <div class="stat-value">11111111111</div>
+                    <div class="stat-label">Chain ID</div>
+                </div>
+                <div class="card stat">
+                    <div class="stat-value">FCO</div>
+                    <div class="stat-label">Native Token</div>
+                </div>
+                <div class="card stat">
+                    <div class="stat-value">~2s</div>
+                    <div class="stat-label">Block Time</div>
+                </div>
+                <div class="card stat">
+                    <div class="stat-value">20 Gwei</div>
+                    <div class="stat-label">Gas Price</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Network Details</h2>
+            <div class="card">
+                <table>
+                    <tr>
+                        <th>Network Name</th>
+                        <td>Fanatico</td>
+                    </tr>
+                    <tr>
+                        <th>Chain ID</th>
+                        <td><code>11111111111</code> (hex: <code>0x2964619c7</code>)</td>
+                    </tr>
+                    <tr>
+                        <th>RPC URL</th>
+                        <td><code>https://rpc.fanati.co</code></td>
+                    </tr>
+                    <tr>
+                        <th>Currency Symbol</th>
+                        <td><code>FCO</code></td>
+                    </tr>
+                    <tr>
+                        <th>Currency Decimals</th>
+                        <td><code>18</code></td>
+                    </tr>
+                    <tr>
+                        <th>Client Version</th>
+                        <td><code>FanaticoL1/v0.4.9.98/python</code></td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>Connect Your Wallet</h2>
+            <div class="card">
+                <p style="margin-bottom: 1rem;">Add Fanatico to MetaMask or any EVM-compatible wallet:</p>
+                <div class="code-block">
+Network Name: Fanatico
+RPC URL: https://rpc.fanati.co
+Chain ID: 11111111111
+Currency Symbol: FCO
+Decimals: 18
+                </div>
+                <div class="buttons">
+                    <a href="javascript:void(0)" class="btn" onclick="addToMetaMask()">Add to MetaMask</a>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Developer Integration</h2>
+            <div class="card">
+                <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem;">Hardhat Configuration</h3>
+                <div class="code-block">
+module.exports = {
+  networks: {
+    fanatico: {
+      url: "https://rpc.fanati.co",
+      chainId: 11111111111,
+      gasPrice: 20000000000
+    }
+  }
+};
+                </div>
+            </div>
+            <div class="card">
+                <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem;">ethers.js</h3>
+                <div class="code-block">
+const provider = new ethers.JsonRpcProvider("https://rpc.fanati.co");
+                </div>
+            </div>
+            <div class="card">
+                <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem;">web3.py</h3>
+                <div class="code-block">
+from web3 import Web3
+w3 = Web3(Web3.HTTPProvider("https://rpc.fanati.co"))
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Supported Features</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3 style="margin-bottom: 0.5rem;">EIP-155</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Replay attack protection</p>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 0.5rem;">EIP-1559</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Dynamic fee transactions</p>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 0.5rem;">EIP-2930</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Access list transactions</p>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 0.5rem;">WebSocket</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Real-time subscriptions</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Resources</h2>
+            <div class="buttons">
+                <a href="https://github.com/FanaticoInc/fanatico-chain" class="btn btn-outline">GitHub</a>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Fanatico. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        async function addToMetaMask() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('MetaMask is not installed. Please install MetaMask to add the network.');
+                return;
+            }
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x2964619c7',
+                        chainName: 'Fanatico',
+                        nativeCurrency: {
+                            name: 'Fanatico',
+                            symbol: 'FCO',
+                            decimals: 18
+                        },
+                        rpcUrls: ['https://rpc.fanati.co'],
+                        blockExplorerUrls: null
+                    }]
+                });
+            } catch (error) {
+                console.error('Error adding network:', error);
+                alert('Error adding network. See console for details.');
+            }
+        }
+    </script>
+</body>
+</html>
