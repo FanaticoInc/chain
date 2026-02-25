@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-11-10T06:48:29.767210",
+  "version": "v0.4.1",
+  "endpoint": "http://paratime.fanati.co:8546",
+  "chainId": 999999999,
+  "tests": [
+    {
+      "name": "Network Connectivity",
+      "status": "PASS",
+      "block": 0
+    },
+    {
+      "name": "Account Balance",
+      "status": "PASS",
+      "balance": 34.37
+    },
+    {
+      "name": "Get Nonce",
+      "status": "PASS",
+      "nonce": 0
+    },
+    {
+      "name": "Contract Deployment",
+      "status": "PASS",
+      "gasUsed": 200000,
+      "contractAddress": "0xc9df66b4BB6d4C67A313CCc2951f32d6063bf995",
+      "txHash": "0x1fbaea1c29abf111e786f38502b77817cdc73187522b8bea8449c1cb25f5064c"
+    },
+    {
+      "name": "eth_getCode",
+      "status": "PASS",
+      "codeLength": 568
+    },
+    {
+      "name": "eth_call",
+      "status": "FAIL",
+      "error": "'Contract' object has no attribute 'encodeABI'"
+    },
+    {
+      "name": "eth_getStorageAt",
+      "status": "WARNING",
+      "value": 0,
+      "expected": 42
+    },
+    {
+      "name": "Write Operation",
+      "status": "PASS",
+      "txHash": "0x900e5b771535d4e675224229b5f72cbc3acdb8aedb33d0fe8dad0d054faed9b9"
+    },
+    {
+      "name": "Read After Write",
+      "status": "FAIL",
+      "error": "'Contract' object has no attribute 'encodeABI'"
+    }
+  ]
+}

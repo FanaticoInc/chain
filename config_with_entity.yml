@@ -1,0 +1,23 @@
+mode: client
+common:
+  data_dir: /node/data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+p2p:
+  port: 26657
+genesis:
+  file: /node/etc/genesis.json
+  
+# Entity configuration
+registration:
+  entity: /home/claude/entity/entity_descriptor.json
+  
+# Consensus configuration
+consensus:
+  tendermint:
+    p2p:
+      seed_mode: false

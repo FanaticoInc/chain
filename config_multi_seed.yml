@@ -1,0 +1,47 @@
+mode: client
+common:
+  data_dir: /home/claude/multi_seed_data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+
+p2p:
+  port: 26659
+  # Multiple seed nodes for redundancy
+  seeds:
+    # Primary seed node (based on documentation)
+    - "0BDzJnkREvNWRJ65I/TpamPzt2y/5/8duvZBjMd8acY=@95.217.47.102:26656"
+    # Backup seed nodes (if available)
+    - "0BDzJnkREvNWRJ65I/TpamPzt2y/5/8duvZBjMd8acY=@138.201.16.186:26656"
+
+  # Allow connections from/to consensus nodes
+  persistent_peers: []
+
+  # Network discovery settings
+  discovery:
+    enable: true
+
+  # Connection settings
+  max_num_outbound_peers: 10
+  max_num_inbound_peers: 40
+
+# Use the existing genesis file from production
+genesis:
+  file: /node/etc/genesis.json
+
+# Consensus configuration for client mode
+consensus:
+  tendermint:
+    # Light client mode - sync from validators without participating
+    mode: full
+
+# Runtime configuration (optional for client)
+runtime:
+  enabled: false
+
+# Registration disabled for client mode
+registration:
+  enabled: false

@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  fco-metrics-api:
+    build: .
+    container_name: fco-metrics-api
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - RPC_URL=http://paratime.fanati.co:8545
+      - AUTHORITY_ADDRESS=0xed4E6CA376FaA5c1EB37fF8Fc053875A6F327EB2
+      - FCO_ADDRESS=0xd6F8Ff0036D8B2088107902102f9415330868109
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - fanatico-network
+
+networks:
+  fanatico-network:
+    external: true

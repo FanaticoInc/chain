@@ -1,0 +1,197 @@
+# AlertManager Configuration for Fanatico L1 v0.5.0.0
+# January 29, 2026
+
+global:
+  # Global settings
+  resolve_timeout: 5m
+
+  # SMTP settings for email alerts
+  smtp_smarthost: 'smtp.example.com:587'
+  smtp_from: 'alerts@fanati.co'
+  smtp_auth_username: '${SMTP_USERNAME}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+  smtp_require_tls: true
+
+  # Slack settings
+  slack_api_url: '${SLACK_WEBHOOK_URL}'
+
+  # PagerDuty settings
+  pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+
+# Route tree
+route:
+  # Default receiver
+  receiver: 'slack-notifications'
+
+  # Group alerts by these labels
+  group_by: ['alertname', 'cluster', 'service']
+
+  # Wait before sending first notification
+  group_wait: 30s
+
+  # Wait before sending updated notification
+  group_interval: 5m
+
+  # Wait before resending
+  repeat_interval: 4h
+
+  # Child routes
+  routes:
+    # Critical alerts - PagerDuty + Slack
+    - match:
+        severity: critical
+      receiver: 'pagerduty-critical'
+      continue: true
+
+    - match:
+        severity: critical
+      receiver: 'slack-critical'
+      group_wait: 10s
+      repeat_interval: 1h
+
+    # High severity - Slack critical channel
+    - match:
+        severity: high
+      receiver: 'slack-critical'
+      repeat_interval: 2h
+
+    # Warning severity - Slack warnings channel
+    - match:
+        severity: warning
+      receiver: 'slack-warnings'
+      repeat_interval: 4h
+
+    # Database alerts - DBA team
+    - match:
+        service: database
+      receiver: 'slack-dba'
+
+    # Security alerts - Security team
+    - match:
+        service: security
+      receiver: 'slack-security'
+      continue: true
+
+    - match_re:
+        alertname: '.*Security.*|.*SSL.*|.*Login.*'
+      receiver: 'email-security'
+
+# Inhibition rules
+inhibit_rules:
+  # If a host is down, don't alert on its services
+  - source_match:
+      alertname: 'HostDown'
+    target_match_re:
+      alertname: '.+'
+    equal: ['instance']
+
+  # If cluster is unhealthy, don't alert on individual nodes
+  - source_match:
+      alertname: 'PatroniClusterUnhealthy'
+    target_match:
+      service: 'database'
+    equal: ['cluster']
+
+  # If RPC node is down, don't alert on high latency
+  - source_match:
+      alertname: 'RPCNodeDown'
+    target_match:
+      alertname: 'RPCHighLatency'
+    equal: ['instance']
+
+# Receivers
+receivers:
+  # Default Slack notifications
+  - name: 'slack-notifications'
+    slack_configs:
+      - channel: '#fanatico-alerts'
+        username: 'AlertManager'
+        icon_emoji: ':bell:'
+        send_resolved: true
+        title: '{{ template "slack.default.title" . }}'
+        text: '{{ template "slack.default.text" . }}'
+
+  # Critical Slack channel
+  - name: 'slack-critical'
+    slack_configs:
+      - channel: '#fanatico-critical'
+        username: 'AlertManager'
+        icon_emoji: ':rotating_light:'
+        send_resolved: true
+        color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+        title: '{{ if eq .Status "firing" }}🚨 CRITICAL{{ else }}✅ RESOLVED{{ end }}: {{ .CommonAnnotations.summary }}'
+        text: |
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Severity:* {{ .Labels.severity }}
+          *Service:* {{ .Labels.service }}
+          *Instance:* {{ .Labels.instance }}
+          {{ end }}
+        actions:
+          - type: button
+            text: 'View in Grafana'
+            url: 'http://grafana.internal:3000/d/fanatico-overview'
+          - type: button
+            text: 'Runbook'
+            url: 'https://docs.fanati.co/runbook'
+
+  # Warnings Slack channel
+  - name: 'slack-warnings'
+    slack_configs:
+      - channel: '#fanatico-warnings'
+        username: 'AlertManager'
+        icon_emoji: ':warning:'
+        send_resolved: true
+        color: '{{ if eq .Status "firing" }}warning{{ else }}good{{ end }}'
+        title: '{{ if eq .Status "firing" }}⚠️ WARNING{{ else }}✅ RESOLVED{{ end }}: {{ .CommonAnnotations.summary }}'
+        text: |
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Instance:* {{ .Labels.instance }}
+          {{ end }}
+
+  # DBA Team Slack channel
+  - name: 'slack-dba'
+    slack_configs:
+      - channel: '#fanatico-dba'
+        username: 'AlertManager'
+        icon_emoji: ':database:'
+        send_resolved: true
+
+  # Security Team Slack channel
+  - name: 'slack-security'
+    slack_configs:
+      - channel: '#fanatico-security'
+        username: 'AlertManager'
+        icon_emoji: ':lock:'
+        send_resolved: true
+        color: 'danger'
+
+  # PagerDuty for critical alerts
+  - name: 'pagerduty-critical'
+    pagerduty_configs:
+      - service_key: '${PAGERDUTY_SERVICE_KEY}'
+        severity: '{{ .CommonLabels.severity }}'
+        description: '{{ .CommonAnnotations.summary }}'
+        details:
+          firing: '{{ template "pagerduty.default.instances" .Alerts.Firing }}'
+          resolved: '{{ template "pagerduty.default.instances" .Alerts.Resolved }}'
+          num_firing: '{{ .Alerts.Firing | len }}'
+          num_resolved: '{{ .Alerts.Resolved | len }}'
+
+  # Email for security alerts
+  - name: 'email-security'
+    email_configs:
+      - to: 'security@fanati.co'
+        send_resolved: true
+        headers:
+          Subject: '[Fanatico Security Alert] {{ .CommonAnnotations.summary }}'
+
+  # Null receiver (for silencing)
+  - name: 'null'
+
+# Templates
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'

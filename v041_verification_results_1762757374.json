@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-11-10T06:49:17.440949",
+  "version": "v0.4.1",
+  "endpoint": "http://paratime.fanati.co:8546",
+  "chainId": 999999999,
+  "tests": [
+    {
+      "name": "Network Connectivity",
+      "status": "PASS",
+      "block": 2
+    },
+    {
+      "name": "Account Balance",
+      "status": "PASS",
+      "balance": 34.36749999999999
+    },
+    {
+      "name": "Get Nonce",
+      "status": "PASS",
+      "nonce": 2
+    },
+    {
+      "name": "Contract Deployment",
+      "status": "PASS",
+      "gasUsed": 200000,
+      "contractAddress": "0x45A9A932741318612949f311181d2BF24b4ddc4d",
+      "txHash": "0xb8f8792c3ba98785eba80e852cd63747c8530d8e947c14b9e27fcedb754d74ef"
+    },
+    {
+      "name": "eth_getCode",
+      "status": "PASS",
+      "codeLength": 568
+    },
+    {
+      "name": "eth_call",
+      "status": "FAIL",
+      "error": "BaseContract.encode_abi() got an unexpected keyword argument 'fn_name'"
+    },
+    {
+      "name": "eth_getStorageAt",
+      "status": "WARNING",
+      "value": 0,
+      "expected": 42
+    },
+    {
+      "name": "Write Operation",
+      "status": "PASS",
+      "txHash": "0xb041dfabb339c668ca77924a2de9f030da24872807880588fa7a768132b32825"
+    },
+    {
+      "name": "Read After Write",
+      "status": "FAIL",
+      "error": "BaseContract.encode_abi() got an unexpected keyword argument 'fn_name'"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+# etcd Configuration for Fanatico L1 v0.5.0.0
+# Distributed Configuration Store for Patroni
+# January 29, 2026
+#
+# Template - replace placeholders:
+# - ${NODE_NAME}: etcd1, etcd2, or etcd3
+# - ${NODE_IP}: IP address of this node
+# - ${CLUSTER_TOKEN}: Unique cluster token
+
+# Member configuration
+name: '${NODE_NAME}'
+data-dir: '/var/lib/etcd/fanatico'
+wal-dir: '/var/lib/etcd/fanatico/wal'
+
+# Cluster configuration
+initial-advertise-peer-urls: 'http://${NODE_IP}:2380'
+listen-peer-urls: 'http://0.0.0.0:2380'
+listen-client-urls: 'http://0.0.0.0:2379,http://127.0.0.1:2379'
+advertise-client-urls: 'http://${NODE_IP}:2379'
+
+# Cluster bootstrap
+initial-cluster-token: '${CLUSTER_TOKEN}'
+initial-cluster-state: 'new'
+initial-cluster: 'etcd1=http://10.0.3.10:2380,etcd2=http://10.0.3.11:2380,etcd3=http://10.0.3.12:2380'
+
+# Security (enable in production)
+# client-transport-security:
+#   cert-file: /etc/etcd/ssl/server.crt
+#   key-file: /etc/etcd/ssl/server.key
+#   client-cert-auth: true
+#   trusted-ca-file: /etc/etcd/ssl/ca.crt
+
+# peer-transport-security:
+#   cert-file: /etc/etcd/ssl/peer.crt
+#   key-file: /etc/etcd/ssl/peer.key
+#   client-cert-auth: true
+#   trusted-ca-file: /etc/etcd/ssl/ca.crt
+
+# Tuning
+heartbeat-interval: 100
+election-timeout: 1000
+snapshot-count: 10000
+max-snapshots: 5
+max-wals: 5
+
+# Quota
+quota-backend-bytes: 8589934592  # 8GB
+
+# Auto compaction
+auto-compaction-mode: 'periodic'
+auto-compaction-retention: '1h'
+
+# Logging
+log-level: 'info'
+log-outputs:
+  - 'stderr'
+  - '/var/log/etcd/etcd.log'
+
+# Metrics
+listen-metrics-urls: 'http://0.0.0.0:2381'

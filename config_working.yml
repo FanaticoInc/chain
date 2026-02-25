@@ -1,0 +1,15 @@
+mode: client
+common:
+  data_dir: /home/claude/node_data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+
+p2p:
+  port: 26657
+
+genesis:
+  file: /home/claude/genesis_working.json

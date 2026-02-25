@@ -1,0 +1,17 @@
+mode: client
+common:
+  data_dir: /home/claude/network_test_data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+
+p2p:
+  port: 26659
+  seeds:
+    - "0BDzJnkREvNWRJ65I/TpamPzt2y/5/8duvZBjMd8acY=@95.217.47.102:26656"
+
+genesis:
+  file: /home/claude/genesis_fixed_final.json

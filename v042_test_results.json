@@ -1,0 +1,65 @@
+{
+  "endpoint": "http://paratime.fanati.co:8546",
+  "chain_id": 999999999,
+  "timestamp": "2025-11-10 11:32:48",
+  "contract_address": "0x45a9a932741318612949f311181d2bf24b4ddc4d",
+  "success_rate": 88.88888888888889,
+  "passed": 8,
+  "total": 9,
+  "test_results": [
+    {
+      "test": 1,
+      "name": "Network Connectivity",
+      "status": "PASS",
+      "details": "Current block: 1"
+    },
+    {
+      "test": 2,
+      "name": "Account Balance",
+      "status": "PASS",
+      "details": "34.367999999999995 FCO"
+    },
+    {
+      "test": 3,
+      "name": "Transaction Nonce",
+      "status": "PASS",
+      "details": "Nonce: 1"
+    },
+    {
+      "test": 4,
+      "name": "Contract Deployment",
+      "status": "PASS",
+      "details": "Gas usage indicates actual deployment (200000 gas)"
+    },
+    {
+      "test": 5,
+      "name": "eth_getCode",
+      "status": "PASS",
+      "details": "Bytecode starts with 0x60 (CORRECT) - v0.4.2 fix verified! Length: 376 chars"
+    },
+    {
+      "test": 6,
+      "name": "eth_call (Constructor Value)",
+      "status": "PASS",
+      "details": "Returns 42 - v0.4.2 fix verified! Constructor execution working."
+    },
+    {
+      "test": 7,
+      "name": "eth_getStorageAt",
+      "status": "FAIL",
+      "details": "Returns 0 instead of 42 - v0.4.2 fix failed! Storage not persisting."
+    },
+    {
+      "test": 8,
+      "name": "Write Operation",
+      "status": "PASS",
+      "details": "Transaction confirmed: 0xd0bec0f7176045cdf6b8b500a635433bf9c9cd1e612736582a2c4ae56afd69e5"
+    },
+    {
+      "test": 9,
+      "name": "Read After Write",
+      "status": "PASS",
+      "details": "Returns 999 - v0.4.2 fix verified! State persistence working."
+    }
+  ]
+}

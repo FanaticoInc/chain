@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --production
+
+COPY . .
+
+ENV PORT=3001
+ENV RPC_URL=http://paratime.fanati.co:8545
+ENV AUTHORITY_ADDRESS=0xed4E6CA376FaA5c1EB37fF8Fc053875A6F327EB2
+ENV FCO_ADDRESS=0xd6F8Ff0036D8B2088107902102f9415330868109
+
+EXPOSE 3001
+
+CMD ["node", "fco-metrics-api.js"]

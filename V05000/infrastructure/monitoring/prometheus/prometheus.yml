@@ -1,0 +1,174 @@
+# Prometheus Configuration for Fanatico L1 v0.5.0.0
+# January 29, 2026
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'fanatico-l1'
+    env: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Rule files
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+# Scrape configurations
+scrape_configs:
+  # ===========================================
+  # Prometheus self-monitoring
+  # ===========================================
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # ===========================================
+  # Fanatico L1 RPC Nodes
+  # ===========================================
+  - job_name: 'fanatico-rpc'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'rpc1.internal:9545'
+          - 'rpc2.internal:9545'
+          - 'rpc3.internal:9545'
+        labels:
+          service: 'rpc'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '([^:]+):\d+'
+        replacement: '${1}'
+
+  # ===========================================
+  # Fanatico L1 RPC Health Check
+  # ===========================================
+  - job_name: 'fanatico-rpc-health'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - 'http://rpc1.internal:8545'
+          - 'http://rpc2.internal:8545'
+          - 'http://rpc3.internal:8545'
+        labels:
+          service: 'rpc-health'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # ===========================================
+  # PostgreSQL / Patroni
+  # ===========================================
+  - job_name: 'patroni'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - 'db1.internal:8008'
+          - 'db2.internal:8008'
+          - 'db3.internal:8008'
+        labels:
+          service: 'patroni'
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets:
+          - 'db1.internal:9187'
+          - 'db2.internal:9187'
+          - 'db3.internal:9187'
+        labels:
+          service: 'postgres'
+
+  # ===========================================
+  # etcd Cluster
+  # ===========================================
+  - job_name: 'etcd'
+    static_configs:
+      - targets:
+          - 'etcd1.internal:2381'
+          - 'etcd2.internal:2381'
+          - 'etcd3.internal:2381'
+        labels:
+          service: 'etcd'
+
+  # ===========================================
+  # HAProxy
+  # ===========================================
+  - job_name: 'haproxy'
+    static_configs:
+      - targets:
+          - 'haproxy1.internal:8404'
+          - 'haproxy2.internal:8404'
+        labels:
+          service: 'haproxy'
+
+  # ===========================================
+  # Node Exporter (System Metrics)
+  # ===========================================
+  - job_name: 'node'
+    static_configs:
+      - targets:
+          - 'rpc1.internal:9100'
+          - 'rpc2.internal:9100'
+          - 'rpc3.internal:9100'
+          - 'db1.internal:9100'
+          - 'db2.internal:9100'
+          - 'db3.internal:9100'
+          - 'haproxy1.internal:9100'
+          - 'haproxy2.internal:9100'
+        labels:
+          service: 'node'
+
+  # ===========================================
+  # Redis (if used)
+  # ===========================================
+  - job_name: 'redis'
+    static_configs:
+      - targets:
+          - 'redis.internal:9121'
+        labels:
+          service: 'redis'
+
+  # ===========================================
+  # Blackbox Exporter (External Probes)
+  # ===========================================
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - 'https://paratime.fanati.co:8545'
+        labels:
+          probe: 'external-rpc'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # ===========================================
+  # Custom Fanatico Metrics Exporter
+  # ===========================================
+  - job_name: 'fanatico-exporter'
+    scrape_interval: 30s
+    static_configs:
+      - targets:
+          - 'fanatico-exporter:9546'
+        labels:
+          service: 'fanatico-metrics'

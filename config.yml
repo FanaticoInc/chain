@@ -1,0 +1,13 @@
+mode: validator
+common:
+  data_dir: /node/data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+p2p:
+  port: 26657
+genesis:
+  file: /home/claude/genesis_init.json

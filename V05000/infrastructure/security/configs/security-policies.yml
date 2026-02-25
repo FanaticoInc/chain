@@ -1,0 +1,247 @@
+# Fanatico L1 Security Policies Configuration
+# v0.5.0.0 - January 29, 2026
+
+# ============================================
+# RPC Security Configuration
+# ============================================
+rpc:
+  # Rate limiting
+  rate_limiting:
+    enabled: true
+    requests_per_second: 100
+    burst_limit: 200
+    per_ip: true
+    whitelist:
+      - "10.0.0.0/8"      # Internal network
+      - "127.0.0.1"        # Localhost
+
+  # Method access control
+  methods:
+    # Disabled methods (security risk)
+    disabled:
+      - "eth_sign"
+      - "eth_signTransaction"
+      - "personal_unlockAccount"
+      - "personal_sendTransaction"
+      - "personal_sign"
+      - "debug_*"
+      - "admin_*"
+      - "miner_*"
+
+    # Methods requiring authentication (if auth enabled)
+    authenticated:
+      - "eth_sendRawTransaction"
+
+    # Methods with enhanced rate limiting
+    rate_limited:
+      eth_getLogs:
+        requests_per_minute: 30
+        max_block_range: 10000
+      eth_call:
+        requests_per_minute: 60
+      eth_estimateGas:
+        requests_per_minute: 60
+
+  # Input validation
+  validation:
+    max_request_size: 1048576  # 1 MB
+    max_batch_size: 100
+    max_array_length: 1000
+    max_string_length: 66000  # ~32KB hex encoded
+
+  # Response security
+  response:
+    hide_internal_errors: true
+    max_response_size: 10485760  # 10 MB
+
+# ============================================
+# Network Security Configuration
+# ============================================
+network:
+  # TLS configuration
+  tls:
+    enabled: true
+    min_version: "1.2"
+    cipher_suites:
+      - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+      - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+      - "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+      - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+    hsts:
+      enabled: true
+      max_age: 31536000
+      include_subdomains: true
+
+  # Firewall rules
+  firewall:
+    default_policy: "deny"
+    allowed_ports:
+      public:
+        - 8545  # RPC HTTP
+        - 8546  # RPC WebSocket
+        - 443   # HTTPS
+      internal:
+        - 5432  # PostgreSQL
+        - 8008  # Patroni
+        - 2379  # etcd
+        - 9090  # Prometheus
+        - 3000  # Grafana
+
+  # DDoS protection
+  ddos:
+    enabled: true
+    provider: "cloudflare"
+    challenge_threshold: 50
+    block_threshold: 100
+
+# ============================================
+# Authentication Configuration
+# ============================================
+authentication:
+  # API keys (optional)
+  api_keys:
+    enabled: false
+    header_name: "X-API-Key"
+    rate_limit_multiplier: 10  # Higher limits for authenticated
+
+  # JWT (optional)
+  jwt:
+    enabled: false
+    algorithm: "RS256"
+    expiry_hours: 24
+
+# ============================================
+# Database Security Configuration
+# ============================================
+database:
+  # Connection security
+  connection:
+    ssl_mode: "verify-full"
+    ssl_cert: "/etc/fanatico/ssl/client.crt"
+    ssl_key: "/etc/fanatico/ssl/client.key"
+    ssl_ca: "/etc/fanatico/ssl/ca.crt"
+
+  # Access control
+  access:
+    max_connections: 100
+    connection_timeout: 30
+    statement_timeout: 60000  # 60 seconds
+
+  # Encryption
+  encryption:
+    at_rest: true
+    sensitive_columns:
+      - "private_key"
+      - "seed_phrase"
+      - "password"
+
+# ============================================
+# Key Management Configuration
+# ============================================
+key_management:
+  # Key storage
+  storage:
+    type: "vault"  # vault, hsm, file
+    vault_address: "https://vault.internal:8200"
+    vault_path: "secret/fanatico"
+
+  # Key rotation
+  rotation:
+    enabled: true
+    interval_days: 90
+    notify_days_before: 14
+
+  # Backup keys
+  backup:
+    enabled: true
+    encryption: "aes-256-gcm"
+    storage: "s3"
+
+# ============================================
+# Logging Configuration
+# ============================================
+logging:
+  # Security events
+  security_events:
+    enabled: true
+    level: "INFO"
+    include:
+      - "authentication"
+      - "authorization"
+      - "rate_limit"
+      - "input_validation"
+      - "suspicious_activity"
+
+  # Audit logging
+  audit:
+    enabled: true
+    include:
+      - "admin_actions"
+      - "config_changes"
+      - "key_access"
+      - "user_management"
+
+  # Log protection
+  protection:
+    sign_logs: true
+    encrypt_sensitive: true
+    retention_days: 90
+
+# ============================================
+# Monitoring Configuration
+# ============================================
+monitoring:
+  # Security metrics
+  metrics:
+    - "failed_auth_attempts"
+    - "rate_limit_hits"
+    - "invalid_requests"
+    - "suspicious_patterns"
+
+  # Alerting thresholds
+  alerts:
+    failed_auth:
+      threshold: 10
+      window_minutes: 5
+      severity: "high"
+    rate_limit:
+      threshold: 100
+      window_minutes: 1
+      severity: "medium"
+    invalid_requests:
+      threshold: 50
+      window_minutes: 5
+      severity: "medium"
+
+# ============================================
+# Smart Contract Security Configuration
+# ============================================
+smart_contracts:
+  # Deployment restrictions
+  deployment:
+    require_audit: true
+    require_multisig: true
+    min_confirmations: 3
+
+  # Emergency controls
+  emergency:
+    pause_enabled: true
+    pause_multisig: "0x..."  # Multi-sig address
+    min_signatures: 2
+
+# ============================================
+# Compliance Configuration
+# ============================================
+compliance:
+  # Data retention
+  retention:
+    transaction_logs: 2555  # 7 years (days)
+    access_logs: 365
+    security_logs: 730  # 2 years
+
+  # Privacy
+  privacy:
+    anonymize_logs: true
+    pii_fields:
+      - "ip_address"
+      - "user_agent"

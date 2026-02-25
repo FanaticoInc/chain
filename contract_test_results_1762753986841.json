@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-11-10T05:53:00.814Z",
+  "endpoints": [
+    {
+      "name": "Legacy (Chain ID 1234)",
+      "url": "http://paratime.fanati.co:8545",
+      "chainId": 1234,
+      "tests": [
+        {
+          "name": "Network Connectivity",
+          "status": "failed",
+          "error": "missing response for request (value=[ { \"error\": { \"code\": -32603, \"message\": \"Internal error: 'list' object has no attribute 'get'\" }, \"id\": null, \"jsonrpc\": \"2.0\" } ], info={ \"payload\": { \"id\": 3, \"jsonrpc\": \"2.0\", \"method\": \"eth_blockNumber\", \"params\": [  ] } }, code=BAD_DATA, version=6.15.0)"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      }
+    },
+    {
+      "name": "v0.4.0 (Chain ID 999999999)",
+      "url": "http://paratime.fanati.co:8546",
+      "chainId": 999999999,
+      "tests": [
+        {
+          "name": "Network Connectivity",
+          "status": "failed",
+          "error": "missing response for request (value=[ { \"error\": { \"code\": -32603, \"message\": \"Internal error: 'list' object has no attribute 'get'\" }, \"id\": null, \"jsonrpc\": \"2.0\" } ], info={ \"payload\": { \"id\": 3, \"jsonrpc\": \"2.0\", \"method\": \"eth_blockNumber\", \"params\": [  ] } }, code=BAD_DATA, version=6.15.0)"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      }
+    }
+  ]
+}

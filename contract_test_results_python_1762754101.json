@@ -1,0 +1,83 @@
+{
+  "timestamp": "2025-11-10T05:54:49.579968",
+  "endpoints": [
+    {
+      "name": "Legacy (Chain ID 1234)",
+      "url": "http://paratime.fanati.co:8545",
+      "chainId": 1234,
+      "tests": [
+        {
+          "name": "Network Connectivity",
+          "status": "passed",
+          "data": {
+            "blockNumber": 12
+          }
+        },
+        {
+          "name": "Account Balance",
+          "status": "passed",
+          "data": {
+            "address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+            "balance": 4.379300000000001
+          }
+        },
+        {
+          "name": "Get Nonce",
+          "status": "passed",
+          "data": {
+            "nonce": 0
+          }
+        },
+        {
+          "name": "Contract Deployment",
+          "status": "failed",
+          "error": "'SignedTransaction' object has no attribute 'rawTransaction'"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "passed": 3,
+        "failed": 1
+      }
+    },
+    {
+      "name": "v0.4.0 (Chain ID 999999999)",
+      "url": "http://paratime.fanati.co:8546",
+      "chainId": 999999999,
+      "tests": [
+        {
+          "name": "Network Connectivity",
+          "status": "passed",
+          "data": {
+            "blockNumber": 6
+          }
+        },
+        {
+          "name": "Account Balance",
+          "status": "passed",
+          "data": {
+            "address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+            "balance": 34.36569
+          }
+        },
+        {
+          "name": "Get Nonce",
+          "status": "passed",
+          "data": {
+            "nonce": 5
+          }
+        },
+        {
+          "name": "Contract Deployment",
+          "status": "failed",
+          "error": "'SignedTransaction' object has no attribute 'rawTransaction'"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "passed": 3,
+        "failed": 1
+      }
+    }
+  ]
+}

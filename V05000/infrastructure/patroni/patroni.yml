@@ -1,0 +1,163 @@
+# Patroni Configuration for Fanatico L1 v0.5.0.0
+# PostgreSQL High Availability Cluster
+# January 29, 2026
+#
+# This is a template - replace placeholders with actual values:
+# - ${NODE_NAME}: db1, db2, or db3
+# - ${NODE_IP}: IP address of this node
+# - ${ETCD_HOSTS}: Comma-separated list of etcd endpoints
+
+scope: fanatico-l1-cluster
+namespace: /fanatico/
+name: ${NODE_NAME}
+
+restapi:
+  listen: 0.0.0.0:8008
+  connect_address: ${NODE_IP}:8008
+  authentication:
+    username: patroni
+    password: ${PATRONI_REST_PASSWORD}
+
+etcd3:
+  hosts: ${ETCD_HOSTS}
+  # Example: etcd1.internal:2379,etcd2.internal:2379,etcd3.internal:2379
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576  # 1MB
+    maximum_lag_on_syncnode: -1
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        # Connection settings
+        max_connections: 500
+        superuser_reserved_connections: 5
+
+        # Memory settings (adjust based on RAM)
+        shared_buffers: 16GB
+        effective_cache_size: 48GB
+        work_mem: 64MB
+        maintenance_work_mem: 2GB
+
+        # WAL settings for replication
+        wal_level: replica
+        max_wal_senders: 10
+        max_replication_slots: 10
+        hot_standby: "on"
+        wal_keep_size: 1GB
+
+        # Checkpoint settings
+        checkpoint_completion_target: 0.9
+        checkpoint_timeout: 15min
+        max_wal_size: 4GB
+        min_wal_size: 1GB
+
+        # Query planner
+        random_page_cost: 1.1
+        effective_io_concurrency: 200
+
+        # Parallel queries
+        max_worker_processes: 16
+        max_parallel_workers_per_gather: 4
+        max_parallel_workers: 16
+        max_parallel_maintenance_workers: 4
+
+        # Logging
+        log_destination: 'stderr'
+        logging_collector: "on"
+        log_directory: '/var/log/postgresql'
+        log_filename: 'postgresql-%Y-%m-%d_%H%M%S.log'
+        log_rotation_age: 1d
+        log_rotation_size: 100MB
+        log_min_duration_statement: 1000  # Log queries > 1 second
+        log_checkpoints: "on"
+        log_connections: "on"
+        log_disconnections: "on"
+        log_lock_waits: "on"
+        log_temp_files: 0
+
+        # Performance insights
+        shared_preload_libraries: 'pg_stat_statements'
+        pg_stat_statements.track: all
+        pg_stat_statements.max: 10000
+
+        # Fanatico-specific tuning
+        synchronous_commit: "on"
+        fsync: "on"
+        full_page_writes: "on"
+
+  initdb:
+    - encoding: UTF8
+    - data-checksums
+    - locale: en_US.UTF-8
+
+  pg_hba:
+    - local   all             all                                     peer
+    - host    all             all             127.0.0.1/32            scram-sha-256
+    - host    all             all             ::1/128                 scram-sha-256
+    - host    all             all             10.0.0.0/8              scram-sha-256
+    - host    replication     replicator      10.0.0.0/8              scram-sha-256
+    - host    replication     replicator      127.0.0.1/32            scram-sha-256
+
+  users:
+    admin:
+      password: ${POSTGRES_ADMIN_PASSWORD}
+      options:
+        - createrole
+        - createdb
+    replicator:
+      password: ${POSTGRES_REPLICATOR_PASSWORD}
+      options:
+        - replication
+    fanatico:
+      password: ${POSTGRES_FANATICO_PASSWORD}
+      options:
+        - createdb
+
+postgresql:
+  listen: 0.0.0.0:5432
+  connect_address: ${NODE_IP}:5432
+  data_dir: /var/lib/postgresql/15/fanatico
+  bin_dir: /usr/lib/postgresql/15/bin
+  pgpass: /var/lib/postgresql/.pgpass
+
+  authentication:
+    replication:
+      username: replicator
+      password: ${POSTGRES_REPLICATOR_PASSWORD}
+    superuser:
+      username: postgres
+      password: ${POSTGRES_SUPERUSER_PASSWORD}
+    rewind:
+      username: rewind_user
+      password: ${POSTGRES_REWIND_PASSWORD}
+
+  parameters:
+    unix_socket_directories: '/var/run/postgresql'
+
+  pg_hba:
+    - local   all             all                                     peer
+    - host    all             all             127.0.0.1/32            scram-sha-256
+    - host    all             all             ::1/128                 scram-sha-256
+    - host    all             all             10.0.0.0/8              scram-sha-256
+    - host    replication     replicator      10.0.0.0/8              scram-sha-256
+
+  callbacks:
+    on_start: /etc/patroni/callbacks/on_start.sh
+    on_stop: /etc/patroni/callbacks/on_stop.sh
+    on_role_change: /etc/patroni/callbacks/on_role_change.sh
+
+watchdog:
+  mode: automatic
+  device: /dev/watchdog
+  safety_margin: 5
+
+tags:
+  nofailover: false
+  noloadbalance: false
+  clonefrom: false
+  nosync: false

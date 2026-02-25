@@ -1,0 +1,62 @@
+# Fanatico L1 Seed Node Configuration
+# Server: seed1.fanati.co (138.201.16.186)
+# Role: Primary seed node for network bootstrap
+# Hardware: i7-6700, 64GB RAM, 1TB NVMe SSD
+
+mode: seed
+
+common:
+  data_dir: /node/data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+      p2p: debug  # Enhanced logging for seed node operations
+
+# P2P configuration optimized for seed node
+p2p:
+  port: 26656
+  external_address: "138.201.16.186:26656"
+
+  # Seed node specific settings - no seeds or persistent peers initially
+  seeds: []
+  persistent_peers: []
+
+  # Connection limits optimized for seed node role
+  max_num_outbound_peers: 50   # High for discovering network
+  max_num_inbound_peers: 100   # High for serving other nodes
+
+  # Network timeouts
+  dial_timeout: 3s
+  handshake_timeout: 20s
+
+  # Peer exchange settings
+  pex: true  # Enable peer exchange for seed nodes
+
+# Genesis configuration
+genesis:
+  file: /node/etc/genesis.json
+
+# Metrics and monitoring
+metrics:
+  mode: pull
+  address: "127.0.0.1:9090"
+
+# gRPC interface for monitoring
+grpc:
+  debug: false
+  internal:
+    address: unix:/node/data/internal.sock
+
+# Disable components not needed for seed nodes
+runtime:
+  enabled: false
+
+registration:
+  enabled: false
+
+# Consensus not needed for seed nodes
+consensus:
+  validator: false

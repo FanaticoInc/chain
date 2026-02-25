@@ -1,0 +1,116 @@
+{
+  "genesis_time": "2024-01-01T00:00:00.000000000Z",
+  "chain_id": "fanatico-l1-1234",
+  "initial_height": "1",
+  "consensus_params": {
+    "block": {
+      "max_bytes": "22020096",
+      "max_gas": "10000000",
+      "time_iota_ms": "1000"
+    },
+    "evidence": {
+      "max_age_num_blocks": "100000",
+      "max_age_duration": "172800000000000"
+    },
+    "validator": {
+      "pub_key_types": ["ed25519"]
+    },
+    "version": {
+      "app": "1"
+    }
+  },
+  "app_hash": "",
+  "app_state": {
+    "registry": {
+      "params": {
+        "max_validators": 100,
+        "unbonding_time": 86400000000000,
+        "min_self_delegation": "1000000000000000000"
+      }
+    },
+    "roothash": {
+      "params": {
+        "max_runtime_messages": 32,
+        "max_evidence_age": 100000
+      },
+      "runtimes": [
+        {
+          "id": "0x000000000000000000000000000000000000000000000000fanatico10000001",
+          "genesis": {
+            "version": 1,
+            "round": 0,
+            "state_root": "0x0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "kind": "compute",
+          "tee_hardware": "intel-sgx",
+          "deployments": [
+            {
+              "version": 1,
+              "valid_from": 1,
+              "tee": "intel-sgx"
+            }
+          ],
+          "admission_policy": {
+            "entity_whitelist": {
+              "entities": {}
+            }
+          },
+          "governance_model": "entity",
+          "staking": {
+            "thresholds": {
+              "node-compute": "1000000000000000000"
+            }
+          }
+        }
+      ]
+    },
+    "staking": {
+      "params": {
+        "thresholds": {
+          "global": {
+            "validator": "10000000000000000000",
+            "node": "1000000000000000000"
+          }
+        },
+        "debonding_interval": 504,
+        "reward_schedule": [
+          {
+            "until": 3153600000,
+            "scale": "1000000000000000000"
+          }
+        ],
+        "signing_reward_threshold_upper": 9,
+        "signing_reward_threshold_lower": 7,
+        "min_commission_rate": 0,
+        "disable_transfers": false,
+        "disable_delegation": false,
+        "undisable_transfers_from": {}
+      },
+      "token_symbol": "FCO",
+      "token_value_exponent": 18,
+      "total_supply": "1000000000000000000000000000",
+      "common_pool": "500000000000000000000000000",
+      "last_block_fees": "0",
+      "accounts": {
+        "oasis1qp0n7v8s6c9h4k4a9tqz7jj8g7k9w4m6t8p3d5r0z8x2y6": {
+          "general": {
+            "balance": "100000000000000000000000000"
+          }
+        }
+      },
+      "delegations": {},
+      "debonding_delegations": {}
+    }
+  },
+  "validators": [
+    {
+      "address": "3F2C5A89D8E4B7C1A90F8E7D6B5A4C3F2E1D9C8B7A6F5E4D3C2B1A0",
+      "pub_key": {
+        "type": "tendermint/PubKeyEd25519",
+        "value": "PLACEHOLDER_VALIDATOR_PUBKEY_1"
+      },
+      "power": "1000",
+      "name": "consensus1.fanati.co"
+    }
+  ]
+}

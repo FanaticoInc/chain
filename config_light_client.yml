@@ -1,0 +1,32 @@
+mode: client
+common:
+  data_dir: /home/claude/light_client_data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+
+# Light client configuration - connect to external network
+consensus:
+  tendermint:
+    mode: light
+
+# Connect to trusted validators
+p2p:
+  port: 26658
+  seeds:
+    - "0BDzJnkREvNWRJ65I/TpamPzt2y/5/8duvZBjMd8acY=@95.217.47.102:26656"
+
+# Use minimal genesis for light client
+genesis:
+  file: /home/claude/genesis_working.json
+
+# Disable components not needed for light client
+runtime:
+  enabled: false
+
+# Disable registration
+registration:
+  enabled: false

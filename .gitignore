@@ -1,0 +1,159 @@
+# Environment variables (contains private keys!)
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Hardhat files
+cache/
+artifacts/
+typechain-types/
+
+# Coverage
+coverage/
+coverage.json
+.coverage_artifacts
+.coverage_cache
+.coverage_contracts
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Hardhat
+.openzeppelin/
+deployments/
+
+# Private keys and secrets
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# Build outputs
+dist/
+build/
+out/
+
+# Temporary files
+*.tmp
+.cache/
+
+# =============================================================================
+# NON-L1 PROJECT DIRECTORIES
+# These directories contain other Fanatico projects and should NOT be in
+# the fanatico-chain repo which is dedicated to L1 blockchain only.
+# =============================================================================
+
+# Other Fanatico projects (not L1)
+AWS/
+BET/
+DOCKER/
+FALCONEYES/
+FANATICO/
+FREMONT2/
+HEALTH/
+ID/
+ITG/
+JETSON/
+LLM/
+MD/
+MDPROD/
+MONGODB-ATLAS-MIGRATION-*.md
+NFA/
+NOCTION/
+OASIS/
+PRODMD/
+ROCKNROLLA/
+SCRIPTS/
+SENTINEL/
+UAE/
+VIRTULOS/
+VPN/
+
+# External/third-party projects
+archive/
+baginya/
+claude/
+clone/
+mikrotik-monitoring/
+mongo-express/
+network-analytics-ui/
+nfa.md.prod/
+postman/
+stink-bids/
+vpn.md.prod/
+youtube/
+
+# Miscellaneous non-L1 files
+*.pdf
+*.jpg
+*.png
+*.har
+*.tar.gz
+*.tar
+hordes_venv_backup_*.tar.gz
+research.md
+
+# =============================================================================
+# L1 LEGACY/ARCHIVE (local working directories, not for repo)
+# =============================================================================
+
+# Historical L1 version directories (keep locally, not in repo)
+# Current production docs should be in V05000/ which IS tracked
+v04910/
+v049101/
+v04911/
+V04913/
+v0497/
+v0498/
+v0499/
+v04991/
+v04992/
+v04993/
+V04995/
+V04996/
+V04997/
+V04998/
+v0500/
+sapphire-evm-v0496/
+Research/
+paratime/
+
+# L1 working directories (local only)
+ai-knowledge/
+devteam/
+entity/
+external_network_data/
+go/
+hardhat/
+light_client_data/
+multi_seed_data/
+network_test_data/
+node_data/
+screens/
+standalone_data/
+test/
+
+# Root level markdown files (too many, keep only essential docs tracked)
+/*.md
+!CLAUDE.md
+!BACKEND_MIGRATION_INDEX.md
+!BACKEND_INTEGRATION_REQUIREMENTS.md
+!CONTRACT_DEPLOYMENT_BLOCKERS.md
+!DISPATCH_L1_CONFIG.md

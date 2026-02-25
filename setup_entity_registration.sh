@@ -1,0 +1,242 @@
+#!/bin/bash
+
+# Entity Registration Setup Script for Oasis Node
+# This script creates the necessary entity registration files and configurations
+
+echo "=== Oasis Node Entity Registration Setup ==="
+
+# Create entity directory if it doesn't exist
+mkdir -p /node/entity
+
+# Copy entity keys to proper location
+echo "Copying entity keys..."
+cp -r /home/claude/entity/* /node/entity/
+chown -R oasis:oasis /node/entity
+chmod 600 /node/entity/*.pem
+
+# Copy entity descriptor
+echo "Setting up entity descriptor..."
+cp /home/claude/entity_working.json /node/entity/entity.json
+
+# Create node configuration with entity registration
+echo "Creating node configuration..."
+cat > /node/etc/config.yml << 'EOF'
+mode: client
+common:
+  data_dir: /node/data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+
+p2p:
+  port: 26657
+
+genesis:
+  file: /node/etc/genesis.json
+
+# Registration configuration
+registration:
+  entity: /node/entity/entity.json
+EOF
+
+# Set proper permissions
+chown oasis:oasis /node/etc/config.yml
+
+# Create a genesis file with validator set
+echo "Creating genesis file with validators..."
+cat > /node/etc/genesis.json << 'EOF'
+{
+  "height": 1,
+  "genesis_time": "2025-07-15T09:51:08.280925827Z",
+  "chain_id": "fanatico-l1-1234",
+  "registry": {
+    "entities": [
+      {
+        "format": 1,
+        "id": "HGhLI8jeV3R7Dp5nsSHW0bFyvw3a0Sq3Qdd0tzQpnGs=",
+        "nodes": [
+          "m9igeaTpDmMWj2r7I5tO2JZKSQ3XI7mNLLC/AasVjkM="
+        ]
+      }
+    ],
+    "nodes": [
+      {
+        "format": 1,
+        "id": "m9igeaTpDmMWj2r7I5tO2JZKSQ3XI7mNLLC/AasVjkM=",
+        "entity_id": "HGhLI8jeV3R7Dp5nsSHW0bFyvw3a0Sq3Qdd0tzQpnGs=",
+        "expiration": 10000,
+        "tls": {
+          "pub_key": "CQ5IHmm6Mp/sOMlRh6gnbiZin+FQd9H4M14Nt2xZdUQ=",
+          "addresses": [
+            {
+              "address": "178.162.202.86:26657"
+            }
+          ]
+        },
+        "p2p": {
+          "id": "t9At6a3+qiq/3FAz29jpNp4xM8OpQqdtyYeYhsGWqjw=",
+          "addresses": [
+            {
+              "address": "178.162.202.86:26657"
+            }
+          ]
+        },
+        "consensus": {
+          "id": "NLStRPXrQuF4eWwIuUqw+gJdEYEHqjGw29HowSDRJxs="
+        },
+        "roles": {
+          "validator": true
+        }
+      }
+    ],
+    "params": {
+      "gas_costs": {
+        "deregister_entity": 1000,
+        "prove_freshness": 1000,
+        "register_entity": 1000,
+        "register_node": 1000,
+        "register_runtime": 1000,
+        "runtime_epoch_maintenance": 1000,
+        "unfreeze_node": 1000
+      },
+      "max_node_expiration": 5,
+      "enable_runtime_governance_models": {
+        "entity": true
+      },
+      "tee_features": {
+        "sgx": {
+          "pcs": true,
+          "signed_attestations": true,
+          "max_attestation_age": 1200
+        },
+        "freshness_proofs": true
+      }
+    }
+  },
+  "roothash": {
+    "params": {
+      "gas_costs": {
+        "compute_commit": 1000,
+        "evidence": 1000,
+        "proposer_timeout": 1000,
+        "submit_msg": 1000
+      },
+      "max_runtime_messages": 128,
+      "max_in_runtime_messages": 128,
+      "max_evidence_age": 0,
+      "max_past_roots_stored": 1200
+    }
+  },
+  "staking": {
+    "params": {
+      "thresholds": {
+        "entity": "0",
+        "keymanager-churp": "0",
+        "node-compute": "0",
+        "node-keymanager": "0",
+        "node-observer": "0",
+        "node-validator": "0",
+        "runtime-compute": "0",
+        "runtime-keymanager": "0"
+      },
+      "debonding_interval": 1,
+      "commission_schedule_rules": {
+        "min_commission_rate": "0"
+      },
+      "min_delegation": "0",
+      "min_transfer": "0",
+      "min_transact_balance": "0",
+      "fee_split_weight_propose": "0",
+      "fee_split_weight_vote": "1",
+      "fee_split_weight_next_propose": "0",
+      "reward_factor_epoch_signed": "0",
+      "reward_factor_block_proposed": "0"
+    },
+    "token_symbol": "FANATICO",
+    "token_value_exponent": 0,
+    "total_supply": "0",
+    "common_pool": "0",
+    "last_block_fees": "0",
+    "governance_deposits": "0"
+  },
+  "keymanager": {
+    "params": {
+      "gas_costs": {
+        "publish_ephemeral_secret": 1000,
+        "publish_master_secret": 1000,
+        "update_policy": 1000
+      }
+    }
+  },
+  "scheduler": {
+    "params": {
+      "min_validators": 1,
+      "max_validators": 100,
+      "max_validators_per_entity": 1,
+      "reward_factor_epoch_election_any": "0"
+    }
+  },
+  "beacon": {
+    "base": 0,
+    "params": {
+      "backend": "insecure",
+      "insecure_parameters": {
+        "interval": 86400
+      }
+    }
+  },
+  "governance": {
+    "params": {
+      "gas_costs": {
+        "cast_vote": 1000,
+        "submit_proposal": 1000
+      },
+      "min_proposal_deposit": "100",
+      "voting_period": 100,
+      "stake_threshold": 90,
+      "upgrade_min_epoch_diff": 300,
+      "upgrade_cancel_min_epoch_diff": 300,
+      "enable_change_parameters_proposal": true
+    }
+  },
+  "consensus": {
+    "backend": "tendermint",
+    "params": {
+      "timeout_commit": 1000000000,
+      "skip_timeout_commit": false,
+      "empty_block_interval": 0,
+      "max_tx_size": 32768,
+      "max_block_size": 22020096,
+      "max_block_gas": 0,
+      "max_evidence_size": 1048576,
+      "state_checkpoint_interval": 10000,
+      "state_checkpoint_num_kept": 2,
+      "state_checkpoint_chunk_size": 8388608,
+      "gas_costs": {
+        "tx_byte": 1
+      }
+    }
+  },
+  "extra_data": null
+}
+EOF
+
+# Set proper permissions
+chown oasis:oasis /node/etc/genesis.json
+
+echo "=== Entity Registration Setup Complete ==="
+echo ""
+echo "Entity ID: HGhLI8jeV3R7Dp5nsSHW0bFyvw3a0Sq3Qdd0tzQpnGs="
+echo "Node ID: m9igeaTpDmMWj2r7I5tO2JZKSQ3XI7mNLLC/AasVjkM="
+echo "Consensus Key: NLStRPXrQuF4eWwIuUqw+gJdEYEHqjGw29HowSDRJxs="
+echo ""
+echo "Files created:"
+echo "- /node/entity/ (entity keys and descriptors)"
+echo "- /node/etc/config.yml (node configuration)"
+echo "- /node/etc/genesis.json (genesis file with validator set)"
+echo ""
+echo "To start the node:"
+echo "systemctl restart oasis-node"

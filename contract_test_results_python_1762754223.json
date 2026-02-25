@@ -1,0 +1,111 @@
+{
+  "timestamp": "2025-11-10T05:56:20.040600",
+  "endpoints": [
+    {
+      "name": "Legacy (Chain ID 1234)",
+      "url": "http://paratime.fanati.co:8545",
+      "chainId": 1234,
+      "tests": [
+        {
+          "name": "Network Connectivity",
+          "status": "passed",
+          "data": {
+            "blockNumber": 14
+          }
+        },
+        {
+          "name": "Account Balance",
+          "status": "passed",
+          "data": {
+            "address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+            "balance": 4.3788800000000005
+          }
+        },
+        {
+          "name": "Get Nonce",
+          "status": "passed",
+          "data": {
+            "nonce": 2
+          }
+        },
+        {
+          "name": "Contract Deployment",
+          "status": "pending"
+        },
+        {
+          "name": "Read Initial Value",
+          "status": "failed",
+          "error": "'Contract' object has no attribute 'encodeABI'"
+        },
+        {
+          "name": "Write Operation (set 42)",
+          "status": "failed",
+          "error": "Transaction status: 0"
+        },
+        {
+          "name": "Read After Write (42)",
+          "status": "failed",
+          "error": "'Contract' object has no attribute 'encodeABI'"
+        }
+      ],
+      "summary": {
+        "total": 7,
+        "passed": 3,
+        "failed": 3
+      }
+    },
+    {
+      "name": "v0.4.0 (Chain ID 999999999)",
+      "url": "http://paratime.fanati.co:8546",
+      "chainId": 999999999,
+      "tests": [
+        {
+          "name": "Network Connectivity",
+          "status": "passed",
+          "data": {
+            "blockNumber": 6
+          }
+        },
+        {
+          "name": "Account Balance",
+          "status": "passed",
+          "data": {
+            "address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+            "balance": 34.36569
+          }
+        },
+        {
+          "name": "Get Nonce",
+          "status": "passed",
+          "data": {
+            "nonce": 5
+          }
+        },
+        {
+          "name": "Contract Deployment",
+          "status": "pending"
+        },
+        {
+          "name": "Read Initial Value",
+          "status": "failed",
+          "error": "'Contract' object has no attribute 'encodeABI'"
+        },
+        {
+          "name": "Write Operation (set 42)",
+          "status": "failed",
+          "error": "Transaction status: 0"
+        },
+        {
+          "name": "Read After Write (42)",
+          "status": "failed",
+          "error": "'Contract' object has no attribute 'encodeABI'"
+        }
+      ],
+      "summary": {
+        "total": 7,
+        "passed": 3,
+        "failed": 3
+      }
+    }
+  ]
+}

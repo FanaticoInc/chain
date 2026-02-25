@@ -1,0 +1,320 @@
+# Fanatico L1 Alert Rules
+# v0.5.0.0 - January 29, 2026
+
+groups:
+  # ===========================================
+  # RPC Node Alerts
+  # ===========================================
+  - name: fanatico-rpc
+    interval: 30s
+    rules:
+      - alert: RPCNodeDown
+        expr: up{job="fanatico-rpc"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: rpc
+        annotations:
+          summary: "RPC node {{ $labels.instance }} is down"
+          description: "RPC node {{ $labels.instance }} has been unreachable for more than 1 minute."
+
+      - alert: RPCHighLatency
+        expr: histogram_quantile(0.95, rate(rpc_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: rpc
+        annotations:
+          summary: "High RPC latency on {{ $labels.instance }}"
+          description: "95th percentile RPC latency is {{ $value }}s on {{ $labels.instance }}"
+
+      - alert: RPCHighErrorRate
+        expr: rate(rpc_requests_total{status="error"}[5m]) / rate(rpc_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: rpc
+        annotations:
+          summary: "High RPC error rate on {{ $labels.instance }}"
+          description: "RPC error rate is {{ $value | humanizePercentage }} on {{ $labels.instance }}"
+
+      - alert: RPCRateLimitHigh
+        expr: rate(rpc_rate_limit_hits_total[5m]) > 100
+        for: 5m
+        labels:
+          severity: warning
+          service: rpc
+        annotations:
+          summary: "High rate limit hits on {{ $labels.instance }}"
+          description: "Rate limiting is triggering frequently ({{ $value }}/s) on {{ $labels.instance }}"
+
+  # ===========================================
+  # Blockchain Alerts
+  # ===========================================
+  - name: fanatico-blockchain
+    interval: 30s
+    rules:
+      - alert: BlockProductionStopped
+        expr: increase(fanatico_block_number[5m]) == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: blockchain
+        annotations:
+          summary: "Block production has stopped"
+          description: "No new blocks have been produced in the last 5 minutes."
+
+      - alert: BlockTimeHigh
+        expr: fanatico_block_time_seconds > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: blockchain
+        annotations:
+          summary: "Block time is high"
+          description: "Average block time is {{ $value }}s (expected ~2s)"
+
+      - alert: PendingTransactionsHigh
+        expr: fanatico_pending_transactions > 1000
+        for: 5m
+        labels:
+          severity: warning
+          service: blockchain
+        annotations:
+          summary: "High number of pending transactions"
+          description: "{{ $value }} transactions are pending"
+
+      - alert: ChainReorg
+        expr: increase(fanatico_chain_reorgs_total[1h]) > 0
+        labels:
+          severity: warning
+          service: blockchain
+        annotations:
+          summary: "Chain reorganization detected"
+          description: "{{ $value }} chain reorgs detected in the last hour"
+
+  # ===========================================
+  # Database Alerts
+  # ===========================================
+  - name: fanatico-database
+    interval: 30s
+    rules:
+      - alert: PatroniClusterUnhealthy
+        expr: patroni_cluster_healthy == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "Patroni cluster is unhealthy"
+          description: "The Patroni cluster is reporting an unhealthy state."
+
+      - alert: PostgreSQLDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: database
+        annotations:
+          summary: "PostgreSQL is down on {{ $labels.instance }}"
+          description: "PostgreSQL instance {{ $labels.instance }} is unreachable."
+
+      - alert: PostgreSQLReplicationLag
+        expr: pg_replication_lag_seconds > 30
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "PostgreSQL replication lag on {{ $labels.instance }}"
+          description: "Replication lag is {{ $value }}s on {{ $labels.instance }}"
+
+      - alert: PostgreSQLConnectionsHigh
+        expr: pg_stat_activity_count / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "PostgreSQL connections high on {{ $labels.instance }}"
+          description: "{{ $value | humanizePercentage }} of max connections in use"
+
+      - alert: PostgreSQLDeadlocks
+        expr: increase(pg_stat_database_deadlocks[5m]) > 0
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "PostgreSQL deadlocks detected"
+          description: "{{ $value }} deadlocks detected in the last 5 minutes"
+
+  # ===========================================
+  # etcd Alerts
+  # ===========================================
+  - name: fanatico-etcd
+    interval: 30s
+    rules:
+      - alert: EtcdClusterUnavailable
+        expr: count(etcd_server_has_leader) < 2
+        for: 1m
+        labels:
+          severity: critical
+          service: etcd
+        annotations:
+          summary: "etcd cluster has no quorum"
+          description: "Less than 2 etcd nodes have a leader."
+
+      - alert: EtcdHighFsyncDuration
+        expr: histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          service: etcd
+        annotations:
+          summary: "etcd high fsync duration"
+          description: "etcd WAL fsync taking {{ $value }}s on {{ $labels.instance }}"
+
+      - alert: EtcdHighCommitDuration
+        expr: histogram_quantile(0.99, rate(etcd_disk_backend_commit_duration_seconds_bucket[5m])) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          service: etcd
+        annotations:
+          summary: "etcd high commit duration"
+          description: "etcd backend commit taking {{ $value }}s on {{ $labels.instance }}"
+
+  # ===========================================
+  # HAProxy Alerts
+  # ===========================================
+  - name: fanatico-haproxy
+    interval: 30s
+    rules:
+      - alert: HAProxyBackendDown
+        expr: haproxy_backend_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: haproxy
+        annotations:
+          summary: "HAProxy backend {{ $labels.backend }} is down"
+          description: "All servers in backend {{ $labels.backend }} are down."
+
+      - alert: HAProxyServerDown
+        expr: haproxy_server_up == 0
+        for: 1m
+        labels:
+          severity: warning
+          service: haproxy
+        annotations:
+          summary: "HAProxy server {{ $labels.server }} is down"
+          description: "Server {{ $labels.server }} in backend {{ $labels.backend }} is down."
+
+      - alert: HAProxyHighConnectionRate
+        expr: rate(haproxy_frontend_connections_total[5m]) > 1000
+        for: 5m
+        labels:
+          severity: warning
+          service: haproxy
+        annotations:
+          summary: "High connection rate on HAProxy"
+          description: "{{ $value }}/s connections on frontend {{ $labels.frontend }}"
+
+  # ===========================================
+  # System Alerts
+  # ===========================================
+  - name: fanatico-system
+    interval: 30s
+    rules:
+      - alert: HostDown
+        expr: up{job="node"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Host {{ $labels.instance }} is down"
+          description: "Node exporter on {{ $labels.instance }} is unreachable."
+
+      - alert: HostHighCPU
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | humanize }}% on {{ $labels.instance }}"
+
+      - alert: HostHighMemory
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | humanize }}% on {{ $labels.instance }}"
+
+      - alert: HostDiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} is {{ $value | humanize }}% full"
+
+      - alert: HostDiskSpaceCritical
+        expr: (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes)) * 100 > 95
+        for: 1m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Critical disk space on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} is {{ $value | humanize }}% full"
+
+      - alert: HostNetworkReceiveErrors
+        expr: rate(node_network_receive_errs_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Network receive errors on {{ $labels.instance }}"
+          description: "{{ $value }}/s receive errors on {{ $labels.device }}"
+
+  # ===========================================
+  # Security Alerts
+  # ===========================================
+  - name: fanatico-security
+    interval: 30s
+    rules:
+      - alert: HighFailedLoginAttempts
+        expr: increase(ssh_failed_logins_total[5m]) > 10
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "High failed login attempts on {{ $labels.instance }}"
+          description: "{{ $value }} failed SSH logins in the last 5 minutes"
+
+      - alert: SSLCertificateExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 30
+        labels:
+          severity: warning
+          service: security
+        annotations:
+          summary: "SSL certificate expiring soon"
+          description: "SSL certificate for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+
+      - alert: SSLCertificateExpired
+        expr: probe_ssl_earliest_cert_expiry - time() < 0
+        labels:
+          severity: critical
+          service: security
+        annotations:
+          summary: "SSL certificate expired"
+          description: "SSL certificate for {{ $labels.instance }} has expired"

@@ -1,0 +1,118 @@
+{
+  "test_suite": "Sapphire EVM v0.4.9.5 Comprehensive Test",
+  "timestamp": "2025-11-17T16:05:07.858235",
+  "summary": {
+    "total_tests": 20,
+    "passed": 20,
+    "failed": 0,
+    "pass_rate": "100.0%"
+  },
+  "test_results": [
+    {
+      "test": "Database Creation",
+      "status": "\u2705 PASS",
+      "details": "Tables created successfully"
+    },
+    {
+      "test": "Data Insertion",
+      "status": "\u2705 PASS",
+      "details": "Accounts: 115, Blocks: 50, Txs: 200"
+    },
+    {
+      "test": "CRUD Operations",
+      "status": "\u2705 PASS",
+      "details": "All CRUD operations successful"
+    },
+    {
+      "test": "Thread-Safe Connection",
+      "status": "\u2705 PASS",
+      "details": "Multi-threaded access supported"
+    },
+    {
+      "test": "Cache String Operations",
+      "status": "\u2705 PASS",
+      "details": "Set/Get working"
+    },
+    {
+      "test": "Cache TTL (before expiry)",
+      "status": "\u2705 PASS",
+      "details": "Key exists before TTL"
+    },
+    {
+      "test": "Cache TTL (after expiry)",
+      "status": "\u2705 PASS",
+      "details": "Key expired correctly"
+    },
+    {
+      "test": "LRU Eviction",
+      "status": "\u2705 PASS",
+      "details": "Cache size maintained at 10"
+    },
+    {
+      "test": "Cache Persistence",
+      "status": "\u2705 PASS",
+      "details": "Cache saved and loaded correctly"
+    },
+    {
+      "test": "Export Functionality",
+      "status": "\u2705 PASS",
+      "details": "Exported 96405 bytes"
+    },
+    {
+      "test": "Import Functionality",
+      "status": "\u2705 PASS",
+      "details": "Imported 115 accounts"
+    },
+    {
+      "test": "Data Integrity",
+      "status": "\u2705 PASS",
+      "details": "Sample accounts match after migration"
+    },
+    {
+      "test": "Database Performance",
+      "status": "\u2705 PASS",
+      "details": "87751 ops/sec"
+    },
+    {
+      "test": "Cache Performance",
+      "status": "\u2705 PASS",
+      "details": "1392624 ops/sec (15.9x faster than DB)"
+    },
+    {
+      "test": "Batch Operations",
+      "status": "\u2705 PASS",
+      "details": "0.001ms per account retrieval"
+    },
+    {
+      "test": "Thread Safety",
+      "status": "\u2705 PASS",
+      "details": "5 concurrent threads completed successfully"
+    },
+    {
+      "test": "Missing Table Handling",
+      "status": "\u2705 PASS",
+      "details": "Correctly raised OperationalError"
+    },
+    {
+      "test": "Invalid Data Handling",
+      "status": "\u2705 PASS",
+      "details": "SQLite accepts flexible types"
+    },
+    {
+      "test": "Connection Error Handling",
+      "status": "\u2705 PASS",
+      "details": "Correctly handled invalid connection"
+    },
+    {
+      "test": "Schema Compatibility",
+      "status": "\u2705 PASS",
+      "details": "Uses snake_case convention"
+    }
+  ],
+  "environment": {
+    "python_version": "3.13.1 (main, Feb 15 2025, 11:45:31) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "database": "sapphire_evm.db",
+    "export_file": "test_export_v0495.json",
+    "import_db": "test_import_v0495.db"
+  }
+}

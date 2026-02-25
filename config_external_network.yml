@@ -1,0 +1,20 @@
+mode: client
+common:
+  data_dir: /home/claude/external_network_data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+
+p2p:
+  port: 26660
+  # Multiple seed configurations for Fanatico L1 network
+  seeds:
+    # Primary: consensus1 configured as seed node
+    - "0BDzJnkREvNWRJ65I/TpamPzt2y/5/8duvZBjMd8acY=@95.217.47.102:26656"
+
+# Use production genesis file
+genesis:
+  file: /node/etc/genesis.json

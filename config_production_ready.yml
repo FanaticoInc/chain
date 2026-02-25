@@ -1,0 +1,48 @@
+# Fanatico L1 ParaTime Node Configuration
+# Configured for connection to external Fanatico L1 validators and seed nodes
+mode: client
+
+common:
+  data_dir: /home/claude/production_data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+      p2p: debug  # Enhanced P2P logging for network troubleshooting
+
+p2p:
+  port: 26661
+  # Fanatico L1 Network Seed Nodes (confirmed operational)
+  seeds:
+    # Primary: consensus1.fanati.co - confirmed as seed node
+    - "0BDzJnkREvNWRJ65I/TpamPzt2y/5/8duvZBjMd8acY=@95.217.47.102:26656"
+    # Backup: seed1.fanati.co - designated seed node
+    - "SEED_ID_PLACEHOLDER@138.201.16.186:26656"
+
+  # Connection timeout and retry settings
+  dial_timeout: 3s
+  handshake_timeout: 20s
+
+# Genesis file from production network
+genesis:
+  file: /node/etc/genesis.json
+
+# Metrics and monitoring
+metrics:
+  mode: pull
+  address: "127.0.0.1:9090"
+
+# gRPC configuration for local API access
+grpc:
+  debug: false
+  internal:
+    address: unix:/home/claude/production_data/internal.sock
+
+# Optional: Runtime configuration (for ParaTime participation)
+# runtime:
+#   paths:
+#     - /node/runtimes/sapphire-paratime.orc
+#   sgx:
+#     loader: /node/bin/oasis-core-runtime-loader

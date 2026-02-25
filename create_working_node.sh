@@ -1,0 +1,202 @@
+#!/bin/bash
+
+# Create a working single-node Oasis Network setup
+# This script creates a minimal genesis file for a single-node network
+
+echo "Creating working single-node Oasis Network setup..."
+
+# Stop the current node
+echo "Stopping oasis-node service..."
+sudo systemctl stop oasis-node
+
+# Create a minimal working genesis file for single-node setup
+cat > /tmp/working_genesis.json << 'EOF'
+{
+  "height": 1,
+  "genesis_time": "2025-07-16T08:00:00.000000000Z",
+  "chain_id": "fanatico-l1-1234",
+  "registry": {
+    "params": {
+      "gas_costs": {
+        "deregister_entity": 1000,
+        "prove_freshness": 1000,
+        "register_entity": 1000,
+        "register_node": 1000,
+        "register_runtime": 1000,
+        "runtime_epoch_maintenance": 1000,
+        "unfreeze_node": 1000
+      },
+      "max_node_expiration": 5,
+      "enable_runtime_governance_models": {
+        "entity": true
+      },
+      "tee_features": {
+        "sgx": {
+          "pcs": true,
+          "signed_attestations": true,
+          "max_attestation_age": 1200
+        },
+        "freshness_proofs": true
+      }
+    }
+  },
+  "roothash": {
+    "params": {
+      "gas_costs": {
+        "compute_commit": 1000,
+        "evidence": 1000,
+        "proposer_timeout": 1000,
+        "submit_msg": 1000
+      },
+      "max_runtime_messages": 128,
+      "max_in_runtime_messages": 128,
+      "max_evidence_age": 0,
+      "max_past_roots_stored": 1200
+    }
+  },
+  "staking": {
+    "params": {
+      "thresholds": {
+        "entity": "0",
+        "keymanager-churp": "0",
+        "node-compute": "0",
+        "node-keymanager": "0",
+        "node-observer": "0",
+        "node-validator": "0",
+        "runtime-compute": "0",
+        "runtime-keymanager": "0"
+      },
+      "debonding_interval": 1,
+      "commission_schedule_rules": {
+        "min_commission_rate": "0"
+      },
+      "min_delegation": "0",
+      "min_transfer": "0",
+      "min_transact_balance": "0",
+      "fee_split_weight_propose": "0",
+      "fee_split_weight_vote": "1",
+      "fee_split_weight_next_propose": "0",
+      "reward_factor_epoch_signed": "0",
+      "reward_factor_block_proposed": "0"
+    },
+    "token_symbol": "FANATICO",
+    "token_value_exponent": 0,
+    "total_supply": "1000000000000000000",
+    "common_pool": "0",
+    "last_block_fees": "0",
+    "governance_deposits": "0",
+    "ledger": {
+      "oasis1qpllh99nhwzrd56px4txvl26atzgg4f0dpmx7qn0zn68": {
+        "general": {
+          "balance": "1000000000000000000"
+        },
+        "escrow": {
+          "active": {
+            "balance": "0",
+            "total_shares": "0"
+          },
+          "debonding": {
+            "balance": "0",
+            "total_shares": "0"
+          }
+        }
+      }
+    }
+  },
+  "keymanager": {
+    "params": {
+      "gas_costs": {
+        "publish_ephemeral_secret": 1000,
+        "publish_master_secret": 1000,
+        "update_policy": 1000
+      }
+    }
+  },
+  "scheduler": {
+    "params": {
+      "min_validators": 1,
+      "max_validators": 100,
+      "max_validators_per_entity": 1,
+      "reward_factor_epoch_election_any": "0"
+    }
+  },
+  "beacon": {
+    "base": 0,
+    "params": {
+      "backend": "insecure",
+      "insecure_parameters": {
+        "interval": 86400
+      }
+    }
+  },
+  "governance": {
+    "params": {
+      "gas_costs": {
+        "cast_vote": 1000,
+        "submit_proposal": 1000
+      },
+      "min_proposal_deposit": "100",
+      "voting_period": 100,
+      "stake_threshold": 90,
+      "upgrade_min_epoch_diff": 300,
+      "upgrade_cancel_min_epoch_diff": 300,
+      "enable_change_parameters_proposal": true
+    }
+  },
+  "consensus": {
+    "backend": "tendermint",
+    "params": {
+      "timeout_commit": 5000000000,
+      "skip_timeout_commit": false,
+      "empty_block_interval": 0,
+      "max_tx_size": 32768,
+      "max_block_size": 22020096,
+      "max_block_gas": 0,
+      "max_evidence_size": 1048576,
+      "state_checkpoint_interval": 10000,
+      "state_checkpoint_num_kept": 2,
+      "state_checkpoint_chunk_size": 8388608,
+      "gas_costs": {
+        "tx_byte": 1
+      }
+    }
+  },
+  "halt_epoch": 0,
+  "extra_data": null
+}
+EOF
+
+# Update the node configuration to remove entity registration (for client mode)
+cat > /tmp/working_config.yml << 'EOF'
+mode: client
+common:
+  data_dir: /node/data
+  log:
+    format: JSON
+    level:
+      default: info
+      cometbft: info
+      cometbft/context: error
+
+p2p:
+  port: 26657
+
+genesis:
+  file: /node/etc/genesis.json
+EOF
+
+echo "Deploying working configuration..."
+
+# Deploy the files
+sudo cp /tmp/working_genesis.json /node/etc/genesis.json
+sudo cp /tmp/working_config.yml /node/etc/config.yml
+sudo chown oasis:oasis /node/etc/genesis.json /node/etc/config.yml
+
+echo "Starting oasis-node service..."
+sudo systemctl start oasis-node
+
+echo "Checking service status..."
+sudo systemctl status oasis-node --no-pager
+
+echo "Done! The node should now be running in client mode."
+echo "Run '/home/claude/check_node_connectivity.sh' to verify connectivity."
